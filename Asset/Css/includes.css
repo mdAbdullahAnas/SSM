@@ -1,0 +1,127 @@
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a.float-right {
+    margin-left: auto;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px; /* below navbar */
+    left: 0;
+    width: 200px;
+    height: calc(100vh - 60px);
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    display: block;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #ddd;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 220px; /* leave space for sidebar */
+    margin-top: 70px;   /* leave space for navbar */
+    padding: 20px;
+}
+
+/* Registration Form */
+.register-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #f4f7f8;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #eee;
+    position: static;
+    margin-top: 320px;
+}
+
+/* Responsive: small screens */
+@media screen and (max-width: 768px) {
+    /* Sidebar becomes top menu */
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        top: 0;
+        box-shadow: none;
+    }
+
+    /* Main content margin removed */
+    .main-content {
+        margin-left: 0;
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    /* Navbar links spacing smaller */
+    nav a {
+        margin-right: 10px;
+        font-size: 14px;
+    }
+}
