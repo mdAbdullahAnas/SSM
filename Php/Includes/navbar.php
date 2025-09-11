@@ -1,19 +1,24 @@
 <?php
 session_start();
-$base_url = "/SSM/"; // Adjust if your project folder changes
+$base_url = "/SSM/"; 
 ?>
-<nav>
-    <!-- Logo -->
-    <a href="<?php echo $base_url; ?>index.php">SSM</a>
+ 
+<link rel="stylesheet" href="../../Asset/Css/includes.css">
 
-    <!-- Right side links -->
-    <?php if(isset($_SESSION['user_id'])): ?>
-        <span style="color:white; margin-left:auto; margin-right:10px;">
-            Hello, <?php echo htmlspecialchars($_SESSION['username']); ?>
-        </span>
-        <a href="<?php echo $base_url; ?>Php/Auth/logout.php" class="float-right">Logout</a>
-    <?php else: ?>
-        <a href="<?php echo $base_url; ?>Php/Auth/register.php" class="float-right">Sign Up</a>
-        <a href="<?php echo $base_url; ?>Php/Auth/login.php" class="float-right">Login</a>
-    <?php endif; ?>
+<nav class="navbar">
+    <!-- Logo -->
+    <a href="<?php echo $base_url; ?>index.php" class="logo">SSM</a>
+
+    <div id="loginSignup">
+        <!-- Right side links -->
+        <?php if(isset($_SESSION['user_id'])): ?>
+            <span class="welcome-text">
+                Hello, <?php echo htmlspecialchars($_SESSION['username']); ?>
+            </span>
+            <a href="<?php echo $base_url; ?>Php/Auth/logout.php" class="nav-link">Logout</a>
+        <?php else: ?>
+            <a href="<?php echo $base_url; ?>Php/Auth/register.php" class="nav-link">Sign Up</a>
+            <a href="<?php echo $base_url; ?>Php/Auth/login.php" class="nav-link">Login</a>
+        <?php endif; ?>
+    </div>
 </nav>

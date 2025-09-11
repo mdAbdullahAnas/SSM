@@ -1,0 +1,122 @@
+/* ==========================
+   Vendor Dashboard Styling
+   ========================== */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.vendor-navbar {
+    background-color: #444;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    justify-content: space-between;
+}
+
+.vendor-navbar .logo {
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+ 
+.vendor-nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.vendor-nav a:hover {
+    background-color: #666;
+}
+ 
+main.vendor-main {
+    padding: 20px;
+}
+
+.vendor-form {
+    max-width: 500px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.vendor-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.vendor-form input, .vendor-form textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.delivery-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.delivery-table th, .delivery-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.delivery-table th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.delivery-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.review-list .review-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.review-item textarea {
+    resize: vertical;
+}

@@ -1,51 +1,64 @@
 <?php
 session_start();
 $base_url = "/SSM/"; 
-include("../config/db.php");
+
 include("../Includes/header.php");
 include("../Includes/navbar.php");
 include("../Includes/sidebar.php");
+include("../../Connection/db.php"); 
 
 $error = "";
 $success = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Escape all inputs and handle special characters
     $fullname = mysqli_real_escape_string($conn, htmlspecialchars($_POST['fullname']));
     $username = mysqli_real_escape_string($conn, htmlspecialchars($_POST['username']));
     $email = mysqli_real_escape_string($conn, htmlspecialchars($_POST['email']));
     $phone = mysqli_real_escape_string($conn, htmlspecialchars($_POST['phone']));
     $address = mysqli_real_escape_string($conn, htmlspecialchars($_POST['address']));
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
-    $role = $_POST['role']; // customer or vendor
+    $password = mysqli_real_escape_string($conn, htmlspecialchars($_POST['password']));
+    $confirm_password = mysqli_real_escape_string($conn, htmlspecialchars($_POST['confirm_password']));
+    $role = $_POST['role']; // "customer" or "vendor"
 
-    // Additional fields
     $membership = isset($_POST['membership']) ? mysqli_real_escape_string($conn, htmlspecialchars($_POST['membership'])) : null;
     $experience = isset($_POST['experience']) ? mysqli_real_escape_string($conn, htmlspecialchars($_POST['experience'])) : null;
 
     if ($password !== $confirm_password) {
         $error = "❌ Password and Confirm Password do not match!";
     } else {
-        $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' OR email='$email'");
-        if (mysqli_num_rows($check) > 0) {
-            $error = "❌ Username or Email already exists!";
-        } else {
-            $password_hashed = md5($password);
-
-            // Insert into database
-            $sql = "INSERT INTO users (fullname, username, email, phone, address, password, role, membership, experience) 
-                    VALUES ('$fullname', '$username', '$email', '$phone', '$address', '$password_hashed', '$role', '$membership', '$experience')";
-
-            if (mysqli_query($conn, $sql)) {
-                $success = "✅ Registration successful. <a href='login.php'>Login here</a>";
+        if ($role === "customer") {
+            // Insert into users table
+            $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' OR email='$email'");
+            if (mysqli_num_rows($check) > 0) {
+                $error = "❌ Username or Email already exists!";
             } else {
-                $error = "❌ Error: " . mysqli_error($conn);
+                $sql = "INSERT INTO users (fullname, username, email, phone, address, password) 
+                        VALUES ('$fullname', '$username', '$email', '$phone', '$address', '$password')";
+                if (mysqli_query($conn, $sql)) {
+                    $success = "✅ Customer registered successfully. ";
+                } else {
+                    $error = "❌ Error: " . mysqli_error($conn);
+                }
+            }
+        } elseif ($role === "vendor") {
+            // Insert into vendors table
+            $check = mysqli_query($conn, "SELECT * FROM vendors WHERE username='$username' OR email='$email'");
+            if (mysqli_num_rows($check) > 0) {
+                $error = "❌ Username or Email already exists!";
+            } else {
+                $sql = "INSERT INTO vendors (fullname, username, email, phone, address, password, membership, experience) 
+                        VALUES ('$fullname', '$username', '$email', '$phone', '$address', '$password', '$membership', '$experience')";
+                if (mysqli_query($conn, $sql)) {
+                    $success = "✅ Vendor registered successfully.";
+                } else {
+                    $error = "❌ Error: " . mysqli_error($conn);
+                }
             }
         }
     }
 }
 ?>
+
 
 <link rel="stylesheet" href="../../Asset/Css/auth.css">
 
@@ -95,10 +108,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </select>
 
             <label>Password:</label>
-            <input type="password" name="password" placeholder="Password" required>
+            <div style="position: relative;">
+                <input type="password" id="cust_password" name="password" placeholder="Password" required style="padding-right:40px;">
+                <span onclick="togglePassword('cust_password')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+            </div>
 
             <label>Confirm Password:</label>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <div style="position: relative;">
+                <input type="password" id="cust_confirm_password" name="confirm_password" placeholder="Confirm Password" required style="padding-right:40px;">
+                <span onclick="togglePassword('cust_confirm_password')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+            </div>
 
             <button type="submit">Register as Customer</button>
         </form>
@@ -107,6 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Vendor Registration Form -->
     <div id="vendorForm" class="register-container" style="display:none;">
         <h2>Vendor Registration</h2>
+        <?php 
+            if(!empty($error)) echo "<p class='error'>$error</p>";
+            if(!empty($success)) echo "<p class='success'>$success</p>";
+        ?>
         <form method="POST" action="">
             <input type="hidden" name="role" value="vendor">
 
@@ -129,10 +152,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="text" name="experience" placeholder="Experience" required>
 
             <label>Password:</label>
-            <input type="password" name="password" placeholder="Password" required>
+            <div style="position: relative;">
+                <input type="password" id="vend_password" name="password" placeholder="Password" required style="padding-right:40px;">
+                <span onclick="togglePassword('vend_password')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+            </div>
 
             <label>Confirm Password:</label>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <div style="position: relative;">
+                <input type="password" id="vend_confirm_password" name="confirm_password" placeholder="Confirm Password" required style="padding-right:40px;">
+                <span onclick="togglePassword('vend_confirm_password')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+            </div>
 
             <button type="submit">Register as Vendor</button>
         </form>
@@ -153,4 +182,10 @@ document.querySelectorAll('input[name="chooseRole"]').forEach((radio) => {
         }
     });
 });
+
+// toggle password visibility
+function togglePassword(id) {
+    const field = document.getElementById(id);
+    field.type = field.type === "password" ? "text" : "password";
+}
 </script>

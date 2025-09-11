@@ -1,4 +1,4 @@
-/* Reset */
+ /* Reset */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -47,7 +47,7 @@ nav a.float-right {
 }
 
 .sidebar h3 {
-    margin-top: 0;
+    margin-top: 10;
     color: #333;
 }
 
@@ -124,4 +124,47 @@ footer {
         margin-right: 10px;
         font-size: 14px;
     }
+}
+
+
+
+
+
+
+
+nav.navbar {
+    display: flex;
+    justify-content: space-between; /* Logo left, links right */
+    align-items: center;
+    background-color: #333;
+    padding: 10px 20px;
+}
+
+nav .logo {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#loginSignup {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* space between items */
+}
+
+#loginSignup .welcome-text {
+    color: white;
+}
+
+#loginSignup .nav-link {
+    color: rgb(241, 16, 16);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+#loginSignup .nav-link:hover {
+    background-color: #555;
 }
