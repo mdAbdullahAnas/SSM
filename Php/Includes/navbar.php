@@ -3,7 +3,7 @@ session_start();
 $base_url = "/SSM/"; 
 ?>
  
-<link rel="stylesheet" href="../../Asset/Css/includes.css">
+<link rel="stylesheet" href="../../Asset/Css/includes.css ">
 
 <nav class="navbar">
     <!-- Logo -->
