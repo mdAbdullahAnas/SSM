@@ -13,7 +13,7 @@ nav {
     left: 0;
     width: 100%;
     height: 60px;
-    background: #333;
+    background: #353434;
     color: white;
     padding: 10px 20px;
     z-index: 1000;
@@ -130,41 +130,4 @@ footer {
 
 
 
-
-
-nav.navbar {
-    display: flex;
-    justify-content: space-between; /* Logo left, links right */
-    align-items: center;
-    background-color: #333;
-    padding: 10px 20px;
-}
-
-nav .logo {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 20px;
-}
-
-#loginSignup {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* space between items */
-}
-
-#loginSignup .welcome-text {
-    color: white;
-}
-
-#loginSignup .nav-link {
-    color: rgb(241, 16, 16);
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-#loginSignup .nav-link:hover {
-    background-color: #555;
-}
+ 

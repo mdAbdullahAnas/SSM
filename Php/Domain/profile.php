@@ -2,24 +2,26 @@
 session_start();
 include("../../Connection/db.php");
 
-if (!isset($_SESSION['userid']) || !isset($_SESSION['role'])) {
+// ❌ Redirect if not logged in
+if (!isset($_SESSION['role'])) {
     header("Location: ../Auth/login.php");
     exit();
 }
 
-$userid = $_SESSION['userid'];
 $role = $_SESSION['role'];
 
-if($role === 'admin') {
-    die("Admin profile editing is not allowed here.");
-}
+// Admin cannot edit profile here
+if ($role === 'admin') die("Admin profile editing is not allowed here.");
 
-// Fetch profile
+// Use username stored in session
+$usernameVal = $_SESSION['userid'];
+
+// Determine table
 $table = $role === 'vendor' ? 'vendors' : 'users';
-$profile = null;
 
-// Handle POST (Update / Delete)
 $message = "";
+
+// --- Handle update / delete ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
     $username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -27,32 +29,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone    = mysqli_real_escape_string($conn, $_POST['phone']);
     $address  = mysqli_real_escape_string($conn, $_POST['address']);
     $password = $_POST['password'] ?? '';
-    
+
     $extra = "";
     if(!empty($password)) {
         $hashed = password_hash($password, PASSWORD_DEFAULT);
         $extra = ", password='$hashed'";
     }
 
-    if(isset($_POST['update'])) {
-        if($role === 'vendor') {
+    // ✅ Update profile
+    if (isset($_POST['update'])) {
+        if ($role === 'vendor') {
             $experience = mysqli_real_escape_string($conn, $_POST['experience']);
-            $sql = "UPDATE vendors SET fullname='$fullname', username='$username', email='$email', phone='$phone', address='$address', experience='$experience' $extra WHERE username='$userid'";
+            $sql = "UPDATE vendors SET fullname='$fullname', username='$username', email='$email', phone='$phone', address='$address', experience='$experience' $extra WHERE username='".mysqli_real_escape_string($conn, $usernameVal)."'";
         } else {
             $membership = mysqli_real_escape_string($conn, $_POST['membership']);
-            $sql = "UPDATE users SET fullname='$fullname', username='$username', email='$email', phone='$phone', address='$address', membership='$membership' $extra WHERE username='$userid'";
+            $sql = "UPDATE users SET fullname='$fullname', username='$username', email='$email', phone='$phone', address='$address', membership='$membership' $extra WHERE username='".mysqli_real_escape_string($conn, $usernameVal)."'";
         }
         if(mysqli_query($conn, $sql)) {
             $message = "✅ Profile updated successfully!";
-            $userid = $username; // update session variable in case username changed
-            $_SESSION['userid'] = $username;
+            $_SESSION['userid'] = $username; // update session username
         } else {
             $message = "❌ Error: " . mysqli_error($conn);
         }
     }
 
-    if(isset($_POST['delete'])) {
-        $sql = "DELETE FROM $table WHERE username='$userid'";
+    // ✅ Delete profile
+    if (isset($_POST['delete'])) {
+        $sql = "DELETE FROM $table WHERE username='".mysqli_real_escape_string($conn, $usernameVal)."'";
         if(mysqli_query($conn, $sql)) {
             session_destroy();
             header("Location: ../Auth/login.php");
@@ -63,11 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch updated profile
-$res = mysqli_query($conn, "SELECT * FROM $table WHERE username='$userid'");
+// --- Fetch profile by username ---
+$res = mysqli_query($conn, "SELECT * FROM $table WHERE username='".mysqli_real_escape_string($conn, $usernameVal)."'");
 $profile = mysqli_fetch_assoc($res);
-if(!$profile) die("No profile found for user: $userid");
 
+if(!$profile) die("No profile found for user: $usernameVal");
 ?>
 
 <!DOCTYPE html>
@@ -78,23 +81,11 @@ if(!$profile) die("No profile found for user: $userid");
     <link rel="stylesheet" href="../../Asset/Css/Domain/profile.css">
 </head>
 <body>
-
-<!-- <?php 
-if($role === 'vendor') include("../DomainVendor/navbar.php");
-if($role === 'customer') include("../DomainCustomer/navbar.php");
-?> -->
-
 <main class="profile-container">
     <h2><?= ucfirst($role) ?> Profile</h2>
     <?php if($message) echo "<p class='message'>$message</p>"; ?>
-
     <div class="profile-card">
-        <!-- Left Section -->
-        <div class="profile-picture">
-            <?= substr($profile['fullname'],0,1) ?>
-        </div>
-
-        <!-- Right Section - Form -->
+        <div class="profile-picture"><?= substr($profile['fullname'],0,1) ?></div>
         <div class="profile-details">
             <form method="POST">
                 <label>Full Name</label>
@@ -115,7 +106,7 @@ if($role === 'customer') include("../DomainCustomer/navbar.php");
                 <?php if($role === 'vendor'): ?>
                     <label>Experience</label>
                     <input type="text" name="experience" value="<?= htmlspecialchars($profile['experience']) ?>">
-                <?php elseif($role === 'customer'): ?>
+                <?php else: ?>
                     <label>Membership</label>
                     <input type="text" name="membership" value="<?= htmlspecialchars($profile['membership']) ?>">
                 <?php endif; ?>
@@ -125,7 +116,7 @@ if($role === 'customer') include("../DomainCustomer/navbar.php");
 
                 <div style="margin-top:20px;">
                     <button type="submit" name="update" class="btn">Update Profile</button>
-                    <button type="submit" name="delete" class="btn delete-btn" onclick="return confirm('Are you sure? This cannot be undone!')">Delete Profile</button>
+                    <button type="submit" name="delete" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete Profile</button>
                 </div>
             </form>
         </div>

@@ -109,3 +109,100 @@ button:hover {
 .admin-nav a:hover {
     background: #444;
 }
+
+
+/* vendor */
+
+/* vendor-products.css */
+
+.vendor-navbar {
+    background-color: #444;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    justify-content: space-between;
+}
+
+.vendor-navbar .logo {
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+ 
+.vendor-nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.vendor-nav a:hover {
+    background-color: #666;
+}
+ 
+main.vendor-main {
+    padding: 20px;
+}
+
+
+.vendor-main {
+    width: 95%;
+    max-width: 1200px;
+    margin: 30px auto;
+    font-family: Arial, sans-serif;
+}
+
+.vendor-main h2, .vendor-main h3 {
+    color: #333;
+}
+
+.vendor-main form input, 
+.vendor-main form textarea, 
+.vendor-main form button {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+.vendor-main table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.vendor-main table th, 
+.vendor-main table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+.vendor-main table th {
+    background-color: #f4f4f4;
+}
+
+.vendor-main img {
+    max-width: 80px;
+    height: auto;
+}
+
+.vendor-main .btn {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    border-radius: 3px;
+    margin: 2px;
+    display: inline-block;
+}
+
+.vendor-main .btn-danger {
+    background-color: #dc3545;
+}

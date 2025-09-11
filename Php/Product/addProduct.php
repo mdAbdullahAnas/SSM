@@ -16,16 +16,35 @@ if(isset($_POST['submit'])){
     $vendor_id = $_SESSION['userid'];
 
     // Handle image upload
-    $target_dir = "../../Asset/Images/";
-    $file_name = time() . '_' . basename($_FILES["img"]["name"]); // unique name
-    $target_file = $target_dir . $file_name;
+    if(isset($_FILES['img']) && $_FILES['img']['error'] === 0){
+        $allowedTypes = ['jpg','jpeg','png','gif','webp'];
+        $fileTmpPath = $_FILES['img']['tmp_name'];
+        $fileName = $_FILES['img']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    if(move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)){
-        $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, img, vendor_id, description) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $price, $quantity, $target_file, $vendor_id, $description]);
-        $success = "Product added successfully!";
+        if(in_array($fileExtension, $allowedTypes)){
+            // Safe file name based on product name + unique id
+            $safeName = preg_replace("/[^a-zA-Z0-9_-]/", "_", $name);
+            $newFileName = $safeName . "_" . time() . "." . $fileExtension;
+            $uploadPath = $_SERVER['DOCUMENT_ROOT'] . "/SSM/Asset/Images/" . $newFileName;
+
+            if(move_uploaded_file($fileTmpPath, $uploadPath)){
+                // Save relative path to DB
+                $imgPath = "../../Asset/Images/" . $newFileName;
+
+                $stmt = $conn->prepare("INSERT INTO products (name, price, quantity, img, vendor_id, description, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                $stmt->bind_param("sdisis", $name, $price, $quantity, $imgPath, $vendor_id, $description);
+                $stmt->execute();
+
+                $success = "Product added successfully!";
+            } else {
+                $error = "Failed to upload image!";
+            }
+        } else {
+            $error = "Invalid file type! Allowed: jpg, jpeg, png, gif, webp";
+        }
     } else {
-        $error = "Failed to upload image!";
+        $error = "No image selected or error in upload!";
     }
 }
 ?>

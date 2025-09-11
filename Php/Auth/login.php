@@ -73,6 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
+   
+ 
+
+
     // 4️⃣ Fallback: Default Users (plaintext)
     if (isset($default_users[$userid]) && $default_users[$userid]['password'] === $password) {
         $_SESSION['userid'] = $userid;

@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <h1 class="logo">SuperShop Vendor Panel</h1>
     <nav class="vendor-nav">
         <a href="../Product/menu.php">Home</a>
-        <a href="manageProductCategories.php">Manage Products</a>
+        <a href="manageProduct.php">Manage</a>
         <a href="productDelivery.php">Delivery</a>
         <a href="responseCustomerReview.php">Customer Reviews</a>
         <a href="../Domain/profile.php">Profile</a>

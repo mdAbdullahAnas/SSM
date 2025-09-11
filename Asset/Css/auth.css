@@ -1,3 +1,5 @@
+
+
 .login-container {
     max-width: 400px;
     margin: 50px auto;
@@ -35,7 +37,7 @@
 .login-container button {
     width: 100%;
     padding: 12px;
-    background: #007bff;
+    background: #4584c7;
     border: none;
     color: white;
     font-size: 16px;
@@ -48,13 +50,14 @@
 }
 
 .error {
-    color: red;
+    color: rgb(247, 2, 2);
     text-align: center;
     margin-bottom: 15px;
 }
 
 
 
+  
  
 
 
@@ -138,7 +141,7 @@
 }
 
 .error {
-    color: red;
+    color: rgb(247, 6, 6);
     text-align: center;
     margin-bottom: 15px;
 }

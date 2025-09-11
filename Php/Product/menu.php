@@ -1,71 +1,54 @@
 <?php
-// Start session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// DB connection
+session_start();
 include($_SERVER['DOCUMENT_ROOT']."/SSM/Connection/db.php");
 
-// Fetch all products
+// Fetch all products with vendor name
 $result = $conn->query("SELECT p.*, v.fullname as vendor_name 
                         FROM products p 
                         JOIN vendors v ON p.vendor_id=v.id 
                         ORDER BY p.name ASC");
-
-$products = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $products[] = $row;
-    }
-}
+$products=[];
+if($result){ while($row=$result->fetch_assoc()) $products[]=$row; }
 ?>
 
-<!-- CSS -->
 <link rel="stylesheet" href="/SSM/Asset/Css/layout.css">
 <link rel="stylesheet" href="/SSM/Asset/Css/menu.css">
 
 <div class="main-content">
-    <h1>Our Products</h1>
-    <div class="product-grid">
-        <?php foreach ($products as $p): ?>
-            <div class="product-card">
-                <img src="<?= $p['img'] ?>" alt="<?= $p['name'] ?>">
+<h1>Our Products</h1>
+<div class="product-grid">
+<?php foreach($products as $p): ?>
+<div class="product-card">
+<img src="<?= $p['img'] ?>" alt="<?= $p['name'] ?>">
+<h3><?= $p['name'] ?></h3>
+<p class="price">$<?= $p['price'] ?></p>
+<p>Available: <?= $p['quantity'] ?></p>
+<p>Vendor: <?= $p['vendor_name'] ?></p>
 
-                <h3><?= $p['name'] ?></h3>
-                <p class="price">$<?= $p['price'] ?></p>
-                <p>Available: <?= $p['quantity'] ?></p>
-                <p>Vendor: <?= $p['vendor_name'] ?></p>
+<?php if(!isset($_SESSION['role'])): ?>
+<a href="/SSM/Php/Auth/login.php" class="btn">Login to Buy</a>
 
-                <!-- Role Based Buttons -->
-                <?php if (!isset($_SESSION['role'])): ?>
-                    <!-- Guest -->
-                    <a href="/SSM/Php/Auth/login.php" class="btn">Login to Buy</a>
+<?php elseif($_SESSION['role']==='customer'): ?>
+<form action="/SSM/Php/Cart/cart.php" method="POST">
+<input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+<button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
+</form>
+<form action="/SSM/Php/Cart/buy.php" method="POST">
+<input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+<button type="submit" name="buy_now" class="btn">Buy Now</button>
+</form>
 
-                <?php elseif ($_SESSION['role'] === 'customer'): ?>
-                    <!-- Customer -->
-                    <form action="/SSM/Php/Cart/cart.php" method="POST">
-                        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                        <button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
-                    </form>
-                    <form action="/SSM/Php/Cart/buy.php" method="POST">
-                        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                        <button type="submit" name="buy_now" class="btn">Buy Now</button>
-                    </form>
+<?php elseif($_SESSION['role']==='vendor'): ?>
+<a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
+<a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger"
+   onclick="return confirm('Are you sure?')">Delete</a>
 
-                <?php elseif ($_SESSION['role'] === 'vendor'): ?>
-                    <!-- Vendor -->
-                    <a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
-                    <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger"
-                       onclick="return confirm('Are you sure?')">Delete</a>
-
-                <?php elseif ($_SESSION['role'] === 'admin'): ?>
-                    <!-- Admin can manage all -->
-                    <a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
-                    <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger"
-                       onclick="return confirm('Are you sure?')">Delete</a>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-    </div>
+<?php elseif($_SESSION['role']==='admin'): ?>
+<a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
+<a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger"
+   onclick="return confirm('Are you sure?')">Delete</a>
+<?php endif; ?>
+</div>
+<?php endforeach; ?>
+</div>
 </div>
