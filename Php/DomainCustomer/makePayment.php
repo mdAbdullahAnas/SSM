@@ -13,7 +13,7 @@ if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'customer') {
 <head>
     <meta charset="UTF-8">
     <title>Make Payment</title>
-    <link rel="stylesheet" href="../../Asset/Css/customer.css">
+    <link rel="stylesheet" href="../../Asset/Css/Domain/customer.css">
 </head>
 <?php include("navbar.php"); ?>
 <main class="customer-main" id="payment">

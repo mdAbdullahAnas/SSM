@@ -6,7 +6,7 @@ include("Php/Includes/navbar.php");
  
 include("Php/Includes/sidebar.php");
 
-include("menu.php");
+include("Php/Product/menu.php");
  
 ?>
  

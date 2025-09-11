@@ -13,7 +13,7 @@ if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'vendor') {
 <head>
     <meta charset="UTF-8">
     <title>Vendor manage product</title>
-    <link rel="stylesheet" href="../../Asset/Css/vendor.css">
+    <link rel="stylesheet" href="../../Asset/Css/Domain/vendor.css">
 </head>
 <?php include("navbar.php"); ?>
 <main class="vendor-main" id="categories">

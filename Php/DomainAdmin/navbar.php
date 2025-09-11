@@ -13,6 +13,7 @@ if (session_status() == PHP_SESSION_NONE) {
         <a href="report.php">Report</a>
         <a href="approval.php">Approval</a>
         <a href="profile.php">Profile</a>
+        <a href="../Domain/profile.php">P</a>
         <a href="../Auth/logout.php">Logout</a>
     </nav>
 </header>

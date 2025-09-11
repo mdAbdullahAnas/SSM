@@ -8,7 +8,7 @@ include("../../Connection/db.php");
 
 $error = "";
 
-// Default users (backup)
+// Default users (backup, plaintext)
 $default_users = [
     "admin"    => ["password" => "ASDFGHJKL;'", "role" => "admin"],
     "vendor"   => ["password" => "ASDFGHJKL;'", "role" => "vendor"],
@@ -19,35 +19,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userid = trim($_POST['userid']);
     $password = trim($_POST['password']);
 
+    // Flag to check if login succeeded
+    $logged_in = false;
+
     // 1️⃣ Check Admin table
     $stmt = $conn->prepare("SELECT ID, password FROM admin WHERE ID = ?");
     $stmt->bind_param("s", $userid);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($row = $result->fetch_assoc()) {
-        if ($row['password'] === $password) {
+        if (password_verify($password, $row['password'])) {
             $_SESSION['userid'] = $row['ID'];
             $_SESSION['role'] = "admin";
             header("Location: ../DomainAdmin/adminDashboard.php");
             exit();
         } else {
             $error = "❌ Wrong password!";
+            $logged_in = false;
         }
     }
 
-    // 2️⃣ Check Users table
+    // 2️⃣ Check Users table (customers)
     $stmt = $conn->prepare("SELECT username, password FROM users WHERE username = ?");
     $stmt->bind_param("s", $userid);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($row = $result->fetch_assoc()) {
-        if ($row['password'] === $password) {
+        if (password_verify($password, $row['password'])) {
             $_SESSION['userid'] = $row['username'];
             $_SESSION['role'] = "customer";
             header("Location: ../DomainCustomer/customerDashboard.php");
             exit();
         } else {
             $error = "❌ Wrong password!";
+            $logged_in = false;
         }
     }
 
@@ -57,17 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($row = $result->fetch_assoc()) {
-        if ($row['password'] === $password) {
+        if (password_verify($password, $row['password'])) {
             $_SESSION['userid'] = $row['username'];
             $_SESSION['role'] = "vendor";
             header("Location: ../DomainVendor/vendorDashboard.php");
             exit();
         } else {
             $error = "❌ Wrong password!";
+            $logged_in = false;
         }
     }
 
-    // 4️⃣ Fallback: Default Users
+    // 4️⃣ Fallback: Default Users (plaintext)
     if (isset($default_users[$userid]) && $default_users[$userid]['password'] === $password) {
         $_SESSION['userid'] = $userid;
         $_SESSION['role'] = $default_users[$userid]['role'];

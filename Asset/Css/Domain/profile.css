@@ -1,0 +1,137 @@
+/* General Body */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #e4e9f7;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Container */
+.profile-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* Page Title */
+.profile-container h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #1f3c88;
+}
+
+/* Card */
+.profile-card {
+    display: flex;
+    flex-wrap: wrap;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Left Section - Profile Picture */
+.profile-picture {
+    flex: 1 1 200px;
+    background: #1f3c88;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    height: 100%;
+    min-height: 250px;
+}
+
+/* Right Section - Details */
+.profile-details {
+    flex: 2 1 400px;
+    padding: 30px;
+}
+
+/* Form Styles */
+.profile-details label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    color: #555;
+}
+
+.profile-details input,
+.profile-details textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.profile-details textarea {
+    resize: none;
+}
+
+/* Readonly Styling */
+.profile-details input[readonly],
+.profile-details textarea[readonly] {
+    background-color: #f1f4fb;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+/* Responsive */
+@media screen and (max-width: 700px) {
+    .profile-card {
+        flex-direction: column;
+    }
+    .profile-picture {
+        height: 150px;
+        font-size: 4em;
+    }
+}
+/* Buttons */
+.profile-details .btn {
+    display: inline-block;
+    padding: 12px 25px;
+    margin-right: 10px;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(31, 60, 136, 0.2);
+    background: #1f3c88;
+    color: #fff;
+}
+
+.profile-details .btn:hover {
+    background: #16306c;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(31, 60, 136, 0.3);
+}
+
+/* Delete Button */
+.profile-details .delete-btn {
+    background: #e74c3c;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+}
+
+.profile-details .delete-btn:hover {
+    background: #c0392b;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+}

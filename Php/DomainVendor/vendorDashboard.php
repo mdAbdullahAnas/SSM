@@ -10,7 +10,7 @@ if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'vendor') {
 <head>
     <meta charset="UTF-8">
     <title>Vendor Dashboard</title>
-    <link rel="stylesheet" href="../../Asset/Css/vendor.css">
+    <link rel="stylesheet" href="../../Asset/Css/Domain/vendor.css">
 </head>
 <body>
     <?php include("navbar.php"); ?>
@@ -22,6 +22,7 @@ if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'vendor') {
         <?php endif; ?>
 
         <h2>Welcome, <?php echo $_SESSION['userid']; ?> 👋</h2>
+        <a href="../Product/menu.php"></a>
         <p>Select an option from the navigation bar to manage your products and orders.</p>
     </main>
 </body>

@@ -129,7 +129,7 @@ $vendors = mysqli_query($conn, "SELECT * FROM vendors ORDER BY id DESC");
 <head>
     <meta charset="UTF-8">
     <title>Manage Users & Vendors</title>
-    <link rel="stylesheet" href="../../Asset/Css/adminManage.css">
+    <link rel="stylesheet" href="../../Asset/Css/Domain/adminManage.css">
 </head>
 <body>
 <?php include("navbar.php"); ?>

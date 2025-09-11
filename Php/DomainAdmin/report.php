@@ -15,7 +15,7 @@ if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'admin') {
 <head>
     <meta charset="UTF-8">
     <title>Report Generation</title>
-    <link rel="stylesheet" href="../../Asset/Css/admin.css">
+    <link rel="stylesheet" href="../../Asset/Css/Domain/admin.css">
 </head>
 <body>
     <?php include("navbar.php"); ?>
