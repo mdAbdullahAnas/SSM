@@ -85,7 +85,7 @@ button:hover {
 
 /* Header + Navbar */
 .admin-header {
-    background: #222;
+    background: #da6e6e;
     padding: 15px;
     color: white;
     display: flex;
@@ -107,7 +107,7 @@ button:hover {
 }
 
 .admin-nav a:hover {
-    background: #444;
+    background: #575656;
 }
 
 

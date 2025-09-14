@@ -21,6 +21,24 @@ $table = $role === 'vendor' ? 'vendors' : 'users';
 
 $message = "";
 
+
+// Include navbar based on role
+if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] === 'customer') {
+        include("../DomainCustomer/navbar.php");
+    } elseif ($_SESSION['role'] === 'vendor') {
+        include("../DomainVendor/navbar.php");
+    } elseif ($_SESSION['role'] === 'admin') {
+        include("../DomainAdmin/navbar.php");
+    }
+} else {
+    // Optional: a default navbar for guests
+    include("../Includes/navbar.php");
+}
+
+
+
+
 // --- Handle update / delete ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);

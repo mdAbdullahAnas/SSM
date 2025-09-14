@@ -73,3 +73,74 @@
 .btn-danger:hover {
     background: #c0392b;
 }
+
+
+
+
+/* ===== Navbar General ===== */
+.navbar {
+    background: #2c3e50;   /* Dark blue/gray */
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Navbar Brand (Logo or Name) */
+.navbar .brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Navbar Menu */
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li {
+    display: inline-block;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #ecf0f1; /* Light gray */
+    font-size: 16px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.navbar ul li a:hover {
+    background: #3498db; /* Blue highlight */
+    color: #fff;
+}
+
+/* ===== Responsive Navbar (Mobile) ===== */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .navbar ul li {
+        width: 100%;
+    }
+
+    .navbar ul li a {
+        display: block;
+        width: 100%;
+    }
+}

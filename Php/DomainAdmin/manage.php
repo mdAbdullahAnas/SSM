@@ -21,7 +21,7 @@ if (isset($_POST['action_user'])) {
     $email      = mysqli_real_escape_string($conn, $_POST['email'] ?? '');
     $phone      = mysqli_real_escape_string($conn, $_POST['phone'] ?? '');
     $address    = mysqli_real_escape_string($conn, $_POST['address'] ?? '');
-    $membership = mysqli_real_escape_string($conn, $_POST['membership'] ?? 'free');
+    $membership = mysqli_real_escape_string($conn, $_POST['membership'] ?? 'None');
     $password   = $_POST['password'] ?? '';
 
     if ($password) {
@@ -132,6 +132,7 @@ $vendors = mysqli_query($conn, "SELECT * FROM vendors ORDER BY id DESC");
     <link rel="stylesheet" href="../../Asset/Css/Domain/manage.css">
 </head>
 <body>
+
 <?php include("navbar.php"); ?>
 <div class="manage-container">
     <h1>Manage Users & Vendors</h1>
@@ -140,6 +141,27 @@ $vendors = mysqli_query($conn, "SELECT * FROM vendors ORDER BY id DESC");
     <!-- USERS SECTION -->
     <section class="table-section">
         <h2>Users</h2>
+
+        <!-- Add/Update User Form -->
+        <h3><?= $editUser ? "Update User" : "Add New User" ?></h3>
+        <form method="POST" class="crud-form">
+            <?php if ($editUser): ?>
+                <input type="hidden" name="user_id" value="<?= $editUser['id'] ?>">
+                <input type="hidden" name="action_user" value="update">
+            <?php else: ?>
+                <input type="hidden" name="action_user" value="add">
+            <?php endif; ?>
+
+            <input type="text" name="fullname" placeholder="Full Name" value="<?= $editUser['fullname'] ?? '' ?>" required>
+            <input type="text" name="username" placeholder="Username" value="<?= $editUser['username'] ?? '' ?>" required>
+            <input type="email" name="email" placeholder="Email" value="<?= $editUser['email'] ?? '' ?>" required>
+            <input type="text" name="phone" placeholder="Phone" value="<?= $editUser['phone'] ?? '' ?>">
+            <input type="text" name="address" placeholder="Address" value="<?= $editUser['address'] ?? '' ?>">
+            <input type="text" name="membership" placeholder="Membership" value="<?= $editUser['membership'] ?? 'free' ?>" required>
+            <input type="password" name="password" placeholder="Password (leave blank to keep old)">
+            <button type="submit"><?= $editUser ? "Update User" : "Add User" ?></button><br>
+        </form>
+        <br>
         <table>
             <thead>
             <tr>
@@ -180,30 +202,34 @@ $vendors = mysqli_query($conn, "SELECT * FROM vendors ORDER BY id DESC");
             </tbody>
         </table>
 
-        <!-- Add/Update User Form -->
-        <h3><?= $editUser ? "Update User" : "Add New User" ?></h3>
-        <form method="POST" class="crud-form">
-            <?php if ($editUser): ?>
-                <input type="hidden" name="user_id" value="<?= $editUser['id'] ?>">
-                <input type="hidden" name="action_user" value="update">
-            <?php else: ?>
-                <input type="hidden" name="action_user" value="add">
-            <?php endif; ?>
-
-            <input type="text" name="fullname" placeholder="Full Name" value="<?= $editUser['fullname'] ?? '' ?>" required>
-            <input type="text" name="username" placeholder="Username" value="<?= $editUser['username'] ?? '' ?>" required>
-            <input type="email" name="email" placeholder="Email" value="<?= $editUser['email'] ?? '' ?>" required>
-            <input type="text" name="phone" placeholder="Phone" value="<?= $editUser['phone'] ?? '' ?>">
-            <input type="text" name="address" placeholder="Address" value="<?= $editUser['address'] ?? '' ?>">
-            <input type="text" name="membership" placeholder="Membership" value="<?= $editUser['membership'] ?? 'free' ?>" required>
-            <input type="password" name="password" placeholder="Password (leave blank to keep old)">
-            <button type="submit"><?= $editUser ? "Update User" : "Add User" ?></button>
-        </form>
+        
     </section>
 
     <!-- VENDORS SECTION -->
     <section class="table-section">
+        <br><br><hr><hr><hr><br>
         <h2>Vendors</h2>
+
+        <!-- Add/Update Vendor Form -->
+        <h3><?= $editVendor ? "Update Vendor" : "Add New Vendor" ?></h3>
+        <form method="POST" class="crud-form">
+            <?php if ($editVendor): ?>
+                <input type="hidden" name="vendor_id" value="<?= $editVendor['id'] ?>">
+                <input type="hidden" name="action_vendor" value="update">
+            <?php else: ?>
+                <input type="hidden" name="action_vendor" value="add">
+            <?php endif; ?>
+
+            <input type="text" name="fullname" placeholder="Full Name" value="<?= $editVendor['fullname'] ?? '' ?>" required>
+            <input type="text" name="username" placeholder="Username" value="<?= $editVendor['username'] ?? '' ?>" required>
+            <input type="email" name="email" placeholder="Email" value="<?= $editVendor['email'] ?? '' ?>" required>
+            <input type="text" name="phone" placeholder="Phone" value="<?= $editVendor['phone'] ?? '' ?>">
+            <input type="text" name="address" placeholder="Address" value="<?= $editVendor['address'] ?? '' ?>">
+            <input type="text" name="experience" placeholder="Experience" value="<?= $editVendor['experience'] ?? '' ?>">
+            <input type="password" name="password" placeholder="Password (leave blank to keep old)">
+            <button type="submit"><?= $editVendor ? "Update Vendor" : "Add Vendor" ?></button>
+        </form>
+        <br>
         <table>
             <thead>
             <tr>
@@ -244,25 +270,7 @@ $vendors = mysqli_query($conn, "SELECT * FROM vendors ORDER BY id DESC");
             </tbody>
         </table>
 
-        <!-- Add/Update Vendor Form -->
-        <h3><?= $editVendor ? "Update Vendor" : "Add New Vendor" ?></h3>
-        <form method="POST" class="crud-form">
-            <?php if ($editVendor): ?>
-                <input type="hidden" name="vendor_id" value="<?= $editVendor['id'] ?>">
-                <input type="hidden" name="action_vendor" value="update">
-            <?php else: ?>
-                <input type="hidden" name="action_vendor" value="add">
-            <?php endif; ?>
-
-            <input type="text" name="fullname" placeholder="Full Name" value="<?= $editVendor['fullname'] ?? '' ?>" required>
-            <input type="text" name="username" placeholder="Username" value="<?= $editVendor['username'] ?? '' ?>" required>
-            <input type="email" name="email" placeholder="Email" value="<?= $editVendor['email'] ?? '' ?>" required>
-            <input type="text" name="phone" placeholder="Phone" value="<?= $editVendor['phone'] ?? '' ?>">
-            <input type="text" name="address" placeholder="Address" value="<?= $editVendor['address'] ?? '' ?>">
-            <input type="text" name="experience" placeholder="Experience" value="<?= $editVendor['experience'] ?? '' ?>">
-            <input type="password" name="password" placeholder="Password (leave blank to keep old)">
-            <button type="submit"><?= $editVendor ? "Update Vendor" : "Add Vendor" ?></button>
-        </form>
+        
     </section>
 </div>
 </body>

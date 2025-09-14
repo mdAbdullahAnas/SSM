@@ -8,9 +8,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     exit;
 }
 
-// Check valid customer ID
+// Validate customer ID exists
 $customer_id = $_SESSION['userid'] ?? 0;
-$stmtCheck = $conn->prepare("SELECT id FROM users WHERE id=? AND role='customer'");
+$stmtCheck = $conn->prepare("SELECT id FROM users WHERE id=?");
 $stmtCheck->bind_param("i", $customer_id);
 $stmtCheck->execute();
 $resCheck = $stmtCheck->get_result();
@@ -72,7 +72,7 @@ if (isset($_POST['pay_now'])) {
     $stmt->execute();
     $order_id = $stmt->insert_id;
 
-    // Insert order items and reduce stock
+    // Insert order items & reduce stock
     foreach ($_SESSION['cart'] as $item) {
         $stmtItem = $conn->prepare("INSERT INTO order_items (order_id,product_id,quantity,price) VALUES (?,?,?,?)");
         $stmtItem->bind_param("iiid",$order_id,$item['id'],$item['quantity'],$item['price']);
@@ -106,7 +106,6 @@ include("navbar.php");
 
     <p>Total Amount: <b>$<?= number_format($total,2) ?></b></p>
 
-    <!-- Coupon -->
     <form method="POST" class="coupon-form">
         <input type="text" name="coupon_code" placeholder="Enter coupon code">
         <button type="submit" name="apply_coupon" class="btn">Apply Coupon</button>

@@ -1,0 +1,181 @@
+/* ===== General Styles ===== */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f6fa;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.main-content {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ===== Page Titles ===== */
+.main-content h2 {
+    text-align: center;
+    color: #2f3640;
+    margin-bottom: 25px;
+}
+
+/* ===== Cart Table Styles ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+table th {
+    background-color: #2f3640;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f1f2f6;
+}
+
+table tr:hover {
+    background-color: #dcdde1;
+    transition: 0.3s;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    display: inline-block;
+    background-color: #40739e;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 22px;
+    margin: 5px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #2f3640;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #e84118;
+}
+
+.btn-danger:hover {
+    background-color: #c23616;
+}
+
+/* ===== Inputs ===== */
+input[type="number"], input[type="text"], select, textarea {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #dcdde1;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* ===== Forms ===== */
+form {
+    margin-top: 20px;
+}
+
+/* ===== Cart & Payment Sections ===== */
+.cart-item, .payment-method {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: #f1f2f6;
+    transition: 0.3s;
+}
+
+.cart-item:hover, .payment-method:hover {
+    background-color: #dcdde1;
+}
+
+.cart-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+/* ===== Payment Method Styling ===== */
+.payment-method label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.payment-method img {
+    height: 25px;
+    margin-left: 8px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Phone field for wallets */
+#phoneField {
+    margin-top: 10px;
+}
+
+/* Coupon Section */
+input[name="coupon_code"] {
+    display: inline-block;
+    width: 70%;
+    margin-right: 10px;
+}
+
+form button[name="apply_coupon"] {
+    display: inline-block;
+    width: 25%;
+}
+
+/* ===== Responsive ===== */
+@media screen and (max-width: 768px) {
+    .cart-item, .payment-method {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    table th, table td {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+    input[name="coupon_code"], form button[name="apply_coupon"] {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
