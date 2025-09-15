@@ -2,56 +2,53 @@
 session_start();
 include($_SERVER['DOCUMENT_ROOT']."/SSM/Connection/db.php");
 
-// Only customer can access
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer'){
     header("Location: ../Auth/login.php");
     exit;
 }
 
-// Check valid customer ID
-$customer_id = $_SESSION['userid'] ?? 0;
-$stmtCheck = $conn->prepare("SELECT id FROM users WHERE id=? AND role='customer'");
-$stmtCheck->bind_param("i", $customer_id);
-$stmtCheck->execute();
-$resCheck = $stmtCheck->get_result();
-if($resCheck->num_rows == 0){
-    die("Invalid customer ID. Cannot place order.");
+// Handle Buy Now: single product temporarily
+if(isset($_POST['buy_now']) && isset($_POST['product_id'])){
+    $product_id = $_POST['product_id'];
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id=?");
+    $stmt->bind_param("i",$product_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if($res->num_rows>0){
+        $product = $res->fetch_assoc();
+        $_SESSION['cart'] = [];
+        $_SESSION['cart'][$product_id] = [
+            'id'=>$product['id'],
+            'name'=>$product['name'],
+            'price'=>$product['price'],
+            'quantity'=>1
+        ];
+    }
 }
 
-// Cart must not be empty
-if (empty($_SESSION['cart'])) {
+// Cart empty?
+if(empty($_SESSION['cart'])){
     echo "<h2>Your cart is empty. <a href='../Product/menu.php'>Shop Now</a></h2>";
     exit;
 }
 
 // Calculate total
 $total = 0;
-foreach ($_SESSION['cart'] as $item) {
+foreach($_SESSION['cart'] as $item){
     $total += $item['price'] * $item['quantity'];
 }
 
-// Coupon code handling
-$discount = 0;
-if (isset($_POST['apply_coupon']) && !empty($_POST['coupon_code'])) {
-    $coupon_code = trim($_POST['coupon_code']);
-    $stmtCoupon = $conn->prepare("SELECT discount FROM coupons WHERE code=? AND status='active'");
-    $stmtCoupon->bind_param("s", $coupon_code);
-    $stmtCoupon->execute();
-    $resCoupon = $stmtCoupon->get_result();
-    if ($resCoupon->num_rows > 0) {
-        $row = $resCoupon->fetch_assoc();
-        $discount = ($row['discount']/100) * $total;
-        $_SESSION['discount'] = $discount;
-        $_SESSION['coupon_code'] = $coupon_code;
-        $total -= $discount;
-        $_SESSION['success'] = "Coupon applied! Discount: $".number_format($discount,2);
-    } else {
-        $_SESSION['error'] = "Invalid coupon code.";
-    }
-}
+// Get customer ID from username
+$username = $_SESSION['userid'];
+$stmtCheck = $conn->prepare("SELECT id FROM users WHERE username=?");
+$stmtCheck->bind_param("s",$username);
+$stmtCheck->execute();
+$res = $stmtCheck->get_result();
+if($res->num_rows==0) die("Invalid customer.");
+$customer_id = $res->fetch_assoc()['id'];
 
 // Handle payment submission
-if (isset($_POST['pay_now'])) {
+if(isset($_POST['pay_now'])){
     $address = $_POST['address'];
     $contact_number = $_POST['contact_number'];
     $payment_method = $_POST['payment_method'];
@@ -61,35 +58,47 @@ if (isset($_POST['pay_now'])) {
     $card_cvv = $_POST['card_cvv'] ?? null;
     $wallet_type = $_POST['wallet_type'] ?? null;
     $wallet_phone = $_POST['wallet_phone'] ?? null;
-    $coupon_code = $_SESSION['coupon_code'] ?? null;
-    $discount = $_SESSION['discount'] ?? 0;
 
-    // Insert order
+    
     $stmt = $conn->prepare("INSERT INTO orders 
-        (customer_id,total,discount,coupon_code,address,contact_number,payment_method,card_number,card_expiry,card_cvv,wallet_type,wallet_phone,status,created_at)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 'Pending', NOW())");
-    $stmt->bind_param("idisssssssss", $customer_id,$total,$discount,$coupon_code,$address,$contact_number,$payment_method,$card_number,$card_expiry,$card_cvv,$wallet_type,$wallet_phone);
+        (customer_id,total,address,contact_number,payment_method,card_number,card_expiry,card_cvv,wallet_type,wallet_phone,status,created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?,'Pending',NOW())");
+    
+    $stmt->bind_param(
+        "idssssssss",
+        $customer_id,
+        $total,
+        $address,
+        $contact_number,
+        $payment_method,
+        $card_number,
+        $card_expiry,
+        $card_cvv,
+        $wallet_type,
+        $wallet_phone
+    );
+
     $stmt->execute();
     $order_id = $stmt->insert_id;
 
-    // Insert order items and reduce stock
-    foreach ($_SESSION['cart'] as $item) {
+    // Insert order items & reduce stock
+    foreach($_SESSION['cart'] as $item){
         $stmtItem = $conn->prepare("INSERT INTO order_items (order_id,product_id,quantity,price) VALUES (?,?,?,?)");
         $stmtItem->bind_param("iiid",$order_id,$item['id'],$item['quantity'],$item['price']);
         $stmtItem->execute();
 
-        $updateStock = $conn->prepare("UPDATE products SET quantity = quantity - ? WHERE id=?");
+        $updateStock = $conn->prepare("UPDATE products SET quantity=quantity-? WHERE id=?");
         $updateStock->bind_param("ii",$item['quantity'],$item['id']);
         $updateStock->execute();
     }
 
-    unset($_SESSION['cart'], $_SESSION['discount'], $_SESSION['coupon_code']);
-    $_SESSION['success'] = "Order #$order_id placed successfully!";
+    unset($_SESSION['cart']);
+    $_SESSION['success'] = "Your order #$order_id is confirmed. Thanks for your order!";
     header("Location: cart.php");
     exit;
 }
 
-include("navbar.php");
+include("../DomainCustomer/navbar.php");
 ?>
 
 <link rel="stylesheet" href="/SSM/Asset/Css/Domain/Customer/cartPayment.css">
@@ -100,17 +109,8 @@ include("navbar.php");
     <?php if(isset($_SESSION['success'])): ?>
         <p class="success"><?=$_SESSION['success']; unset($_SESSION['success']);?></p>
     <?php endif; ?>
-    <?php if(isset($_SESSION['error'])): ?>
-        <p class="error"><?=$_SESSION['error']; unset($_SESSION['error']);?></p>
-    <?php endif; ?>
 
     <p>Total Amount: <b>$<?= number_format($total,2) ?></b></p>
-
-    <!-- Coupon -->
-    <form method="POST" class="coupon-form">
-        <input type="text" name="coupon_code" placeholder="Enter coupon code">
-        <button type="submit" name="apply_coupon" class="btn">Apply Coupon</button>
-    </form>
 
     <form method="POST" class="checkout-form">
         <h3>Address & Contact</h3>

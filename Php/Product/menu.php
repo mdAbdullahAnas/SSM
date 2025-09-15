@@ -37,7 +37,7 @@ if (isset($_SESSION['role'])) {
             <div class="product-card">
                 <img src="<?= $p['img'] ?>" alt="<?= $p['name'] ?>">
                 <h3><?= $p['name'] ?></h3>
-                <p class="price">$<?= $p['price'] ?></p>
+                <p class="price">$<?= number_format($p['price'],2) ?></p>
                 <p>Available: <?= $p['quantity'] ?></p>
                 <p>Vendor: <?= $p['vendor_name'] ?></p>
 
@@ -45,21 +45,19 @@ if (isset($_SESSION['role'])) {
                     <a href="/SSM/Php/Auth/login.php" class="btn">Login to Buy</a>
 
                 <?php elseif($_SESSION['role'] === 'customer'): ?>
-    <form action="/SSM/Php/DomainCustomer/cart.php" method="POST">
-        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-        <button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
-    </form>
+                    <form action="/SSM/Php/DomainCustomer/addToCart.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+                        <button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
+                    </form>
 
-    <form action="/SSM/Php/DomainCustomer/makePayment.php" method="POST">
-        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-        <button type="submit" name="buy_now" class="btn">Buy Now</button>
-    </form>
+                    <form action="/SSM/Php/DomainCustomer/makePayment.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+                        <button type="submit" name="buy_now" class="btn">Buy Now</button>
+                    </form>
 
-
-                <?php elseif($_SESSION['role'] === 'vendor' || $_SESSION['role'] === 'admin'): ?>
+                <?php else: ?>
                     <a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
-                    <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger"
-                       onclick="return confirm('Are you sure?')">Delete</a>
+                    <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>

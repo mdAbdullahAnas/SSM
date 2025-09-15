@@ -2,30 +2,42 @@
 session_start();
 include($_SERVER['DOCUMENT_ROOT']."/SSM/Connection/db.php");
 
-// Only customer can access
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     header("Location: ../Auth/login.php");
     exit;
 }
 
+// Remove item if requested
+if(isset($_GET['remove_id'])){
+    $remove_id = $_GET['remove_id'];
+    unset($_SESSION['cart'][$remove_id]);
+    header("Location: cart.php");
+    exit;
+}
+
 // Cart empty?
-if (empty($_SESSION['cart'])) {
+if(empty($_SESSION['cart'])){
     echo "<h2>Your cart is empty. <a href='../Product/menu.php'>Shop Now</a></h2>";
     exit;
 }
 
 // Calculate total
 $total = 0;
-foreach ($_SESSION['cart'] as $item) {
+foreach($_SESSION['cart'] as $item){
     $total += $item['price'] * $item['quantity'];
 }
 
-include("navbar.php");
+include("../DomainCustomer/navbar.php");
 ?>
-<link rel="stylesheet" href="/SSM/Asset/Css/Domai/Customer/cartPayment.css">
+
+<link rel="stylesheet" href="/SSM/Asset/Css/Domain/Customer/cartPayment.css">
 
 <div class="main-content">
     <h2>Your Cart</h2>
+    <?php if(isset($_SESSION['success'])): ?>
+        <p class="success"><?=$_SESSION['success']; unset($_SESSION['success']);?></p>
+    <?php endif; ?>
+
     <table>
         <tr>
             <th>Product</th>
@@ -40,9 +52,7 @@ include("navbar.php");
             <td>$<?= number_format($item['price'],2) ?></td>
             <td><?= $item['quantity'] ?></td>
             <td>$<?= number_format($item['price'] * $item['quantity'],2) ?></td>
-            <td>
-                <a href="removeFromCart.php?id=<?= $item['id'] ?>" class="btn btn-danger">Remove</a>
-            </td>
+            <td><a href="cart.php?remove_id=<?= $item['id'] ?>" class="btn btn-danger">Remove</a></td>
         </tr>
         <?php endforeach; ?>
         <tr>

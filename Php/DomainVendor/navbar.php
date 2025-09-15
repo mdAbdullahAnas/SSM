@@ -39,9 +39,11 @@ if (session_status() == PHP_SESSION_NONE) {
     <nav class="vendor-nav">
         <a href="../Product/menu.php">Home</a>
         <a href="manageProduct.php">Manage</a>
+        <a href="/SSM/Php/DomainVendor/manageProduct.php">Manage</a>
+        <a href="/SSM/Php/DomainVendor/orders.php">Order</a>
         <a href="productDelivery.php">Delivery</a>
         <a href="responseCustomerReview.php">Customer Reviews</a>
-        <a href="orders.php">Orders</a>
+        <!-- <a href="orders.php">Orders</a> -->
         <a href="../Domain/profile.php">Profile</a>
          
         <a href="../Auth/logout.php">Logout</a>
