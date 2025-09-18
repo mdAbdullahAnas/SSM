@@ -39,8 +39,9 @@ if (session_status() == PHP_SESSION_NONE) {
     <nav class="customer-nav">
         <a href="/SSM/Php/Product/menu.php">Home</a>
         <a href="/SSM/Php/DomainCustomer/cart.php">Cart</a>
-        <a href="/SSM/Php/DomainCustomer/makePayment.php">Payment</a>
-        <a href="/SSM/Php/DomainCustomer/writeProductReview.php">Write Review</a>
+        <!-- <a href="/SSM/Php/DomainCustomer/makePayment.php">Payment</a> -->
+        <a href="/SSM/Php/DomainCustomer/status.php">Status</a>
+        <a href="/SSM/Php/DomainCustomer/review.php">Review</a>
         <a href="/SSM/Php/Domain/profile.php">Profile</a>
         <a href="/SSM/Php/Auth/logout.php">Logout</a>
     </nav>

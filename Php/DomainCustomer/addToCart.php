@@ -40,6 +40,7 @@ if(isset($_POST['add_to_cart']) && isset($_POST['product_id'])){
 
     $_SESSION['success'] = "$product[name] added to cart!";
     header("Location: ../Product/menu.php"); // redirect back
+     
     exit;
 }
 ?>

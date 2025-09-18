@@ -35,8 +35,12 @@ if (isset($_SESSION['role'])) {
     <div class="product-grid">
         <?php foreach($products as $p): ?>
             <div class="product-card">
-                <img src="<?= $p['img'] ?>" alt="<?= $p['name'] ?>">
-                <h3><?= $p['name'] ?></h3>
+                <!-- ✅ Clicking on image or name will open productDetails.php -->
+                <a href="productDetails.php?id=<?= $p['id'] ?>">
+                    <img src="<?= $p['img'] ?>" alt="<?= $p['name'] ?>">
+                    <h3><?= $p['name'] ?></h3>
+                </a>
+                
                 <p class="price">$<?= number_format($p['price'],2) ?></p>
                 <p>Available: <?= $p['quantity'] ?></p>
                 <p>Vendor: <?= $p['vendor_name'] ?></p>
@@ -56,9 +60,20 @@ if (isset($_SESSION['role'])) {
                     </form>
 
                 <?php else: ?>
-                    <a href="edit_product.php?id=<?= $p['id'] ?>" class="btn">Edit</a>
-                    <a href="delete_product.php?id=<?= $p['id'] ?>" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
-                <?php endif; ?>
+        <!-- Edit Form -->
+          <form action="/SSM/Php/Domain/editProduct.php" method="GET" style="display:inline-block;">
+        <input type="hidden" name="id" value="<?= $p['id'] ?>">
+        <button type="submit" class="btn">Edit</button>
+         </form>
+
+           <!-- Delete Form -->
+          <form action="/SSM/Php/Domain/deleteProduct.php" method="POST" style="display:inline-block;" 
+          onsubmit="return confirm('Are you sure you want to delete this product?');">
+           <input type="hidden" name="id" value="<?= $p['id'] ?>">
+            <button type="submit" class="btn btn-danger">Delete</button>
+           </form>
+          <?php endif; ?>
+
             </div>
         <?php endforeach; ?>
     </div>

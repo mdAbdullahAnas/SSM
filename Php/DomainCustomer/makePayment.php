@@ -9,7 +9,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer'){
 
 // Handle Buy Now: single product temporarily
 if(isset($_POST['buy_now']) && isset($_POST['product_id'])){
-    $product_id = $_POST['product_id'];
+    $product_id = intval($_POST['product_id']);
     $stmt = $conn->prepare("SELECT * FROM products WHERE id=?");
     $stmt->bind_param("i",$product_id);
     $stmt->execute();
@@ -47,10 +47,15 @@ $res = $stmtCheck->get_result();
 if($res->num_rows==0) die("Invalid customer.");
 $customer_id = $res->fetch_assoc()['id'];
 
+// Load applied coupon from session if exists
+$discount = $_SESSION['coupon_discount'] ?? 0;
+$coupon_code = $_SESSION['coupon_code'] ?? '';
+$total_after_discount = max(0, $total - $discount);
+
 // Handle payment submission
 if(isset($_POST['pay_now'])){
-    $address = $_POST['address'];
-    $contact_number = $_POST['contact_number'];
+    $address = trim($_POST['address']);
+    $contact_number = trim($_POST['contact_number']);
     $payment_method = $_POST['payment_method'];
 
     $card_number = $_POST['card_number'] ?? null;
@@ -59,15 +64,18 @@ if(isset($_POST['pay_now'])){
     $wallet_type = $_POST['wallet_type'] ?? null;
     $wallet_phone = $_POST['wallet_phone'] ?? null;
 
-    
-    $stmt = $conn->prepare("INSERT INTO orders 
-        (customer_id,total,address,contact_number,payment_method,card_number,card_expiry,card_cvv,wallet_type,wallet_phone,status,created_at)
-        VALUES (?,?,?,?,?,?,?,?,?,?,'Pending',NOW())");
-    
+    // Insert order
+    $stmt = $conn->prepare("
+        INSERT INTO orders 
+        (customer_id, total, discount, coupon_code, address, contact_number, payment_method, card_number, card_expiry, card_cvv, wallet_type, wallet_phone, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', NOW())
+    ");
     $stmt->bind_param(
-        "idssssssss",
+        "iddsssssssss",
         $customer_id,
-        $total,
+        $total_after_discount,
+        $discount,
+        $coupon_code,
         $address,
         $contact_number,
         $payment_method,
@@ -77,7 +85,6 @@ if(isset($_POST['pay_now'])){
         $wallet_type,
         $wallet_phone
     );
-
     $stmt->execute();
     $order_id = $stmt->insert_id;
 
@@ -92,8 +99,12 @@ if(isset($_POST['pay_now'])){
         $updateStock->execute();
     }
 
+    // Clear cart and coupon
     unset($_SESSION['cart']);
-    $_SESSION['success'] = "Your order #$order_id is confirmed. Thanks for your order!";
+    unset($_SESSION['coupon_code']);
+    unset($_SESSION['coupon_discount']);
+
+    $_SESSION['success'] = "✅ Your order #$order_id is confirmed. Total: $".number_format($total_after_discount,2);
     header("Location: cart.php");
     exit;
 }
@@ -109,13 +120,22 @@ include("../DomainCustomer/navbar.php");
     <?php if(isset($_SESSION['success'])): ?>
         <p class="success"><?=$_SESSION['success']; unset($_SESSION['success']);?></p>
     <?php endif; ?>
+    <?php if(isset($_SESSION['error'])): ?>
+        <p class="error"><?=$_SESSION['error']; unset($_SESSION['error']);?></p>
+    <?php endif; ?>
 
-    <p>Total Amount: <b>$<?= number_format($total,2) ?></b></p>
+    <p>Total Amount: <b>$<span id="totalAmount"><?= number_format($total_after_discount,2) ?></span></b></p>
 
-    <form method="POST" class="checkout-form">
+    <form method="POST" class="checkout-form" id="checkoutForm">
         <h3>Address & Contact</h3>
         <input type="text" name="address" placeholder="Enter delivery address" required><br><br>
         <input type="text" name="contact_number" placeholder="Enter contact number" required><br><br>
+
+        <h3>Coupon Code (Optional)</h3>
+        <input type="text" id="coupon_code" name="coupon_code" placeholder="Enter coupon code" value="<?= htmlspecialchars($coupon_code) ?>">
+        <button type="button" id="applyCouponBtn" class="btn">Apply Coupon</button>
+        <p id="couponMessage" style="margin-top:10px; font-weight:bold;"></p>
+        <br><br>
 
         <h3>Payment Method</h3>
         <label><input type="radio" name="payment_method" value="Card" required> Credit/Debit Card / Bank</label><br>
@@ -161,5 +181,30 @@ paymentRadios.forEach(radio => {
             walletFields.style.display = 'none';
         }
     });
+});
+
+// ---------------- Apply Coupon ----------------
+document.getElementById('applyCouponBtn').addEventListener('click', function(){
+    let code = document.getElementById('coupon_code').value.trim();
+    if(code === ''){
+        document.getElementById('couponMessage').innerHTML = "❌ Please enter a coupon code.";
+        return;
+    }
+
+    let total = <?= $total ?>;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "applyCoupon.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status === 200){
+            let res = JSON.parse(xhr.responseText);
+            document.getElementById('couponMessage').innerHTML = res.message;
+            if(res.success){
+                document.getElementById('totalAmount').innerText = res.total;
+            }
+        }
+    }
+    xhr.send("coupon_code=" + encodeURIComponent(code) + "&total=" + total);
 });
 </script>

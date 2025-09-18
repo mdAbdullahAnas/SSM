@@ -17,6 +17,7 @@ if(isset($_GET['remove_id'])){
 
 // Cart empty?
 if(empty($_SESSION['cart'])){
+    include("navbar.php");
     echo "<h2>Your cart is empty. <a href='../Product/menu.php'>Shop Now</a></h2>";
     exit;
 }
@@ -27,7 +28,7 @@ foreach($_SESSION['cart'] as $item){
     $total += $item['price'] * $item['quantity'];
 }
 
-include("../DomainCustomer/navbar.php");
+include("navbar.php");
 ?>
 
 <link rel="stylesheet" href="/SSM/Asset/Css/Domain/Customer/cartPayment.css">
